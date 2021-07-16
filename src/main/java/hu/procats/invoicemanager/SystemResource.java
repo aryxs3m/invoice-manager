@@ -1,9 +1,12 @@
 package hu.procats.invoicemanager;
 
+import hu.procats.invoicemanager.dtos.InvoiceDTO;
 import hu.procats.invoicemanager.dtos.UserDTO;
+import hu.procats.invoicemanager.jpamodels.Invoice;
 import hu.procats.invoicemanager.jpamodels.User;
 import hu.procats.invoicemanager.models.AuthenticationRequest;
 import hu.procats.invoicemanager.models.AuthenticationResponse;
+import hu.procats.invoicemanager.repositories.InvoiceRepository;
 import hu.procats.invoicemanager.services.MyUserDetailsService;
 import hu.procats.invoicemanager.util.ErrorInfo;
 import hu.procats.invoicemanager.util.FrontendException;
@@ -20,7 +23,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -40,6 +46,9 @@ public class SystemResource {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private InvoiceRepository invoiceRepository;
 
     @RequestMapping({ "/ping" })
     public String ping()
@@ -84,5 +93,58 @@ public class SystemResource {
             userRepository.save(user);
             return user;
         }
+    }
+
+    @RequestMapping(value = "/invoice", method = RequestMethod.POST)
+    public Invoice newInvoice(@RequestBody InvoiceDTO invoiceDTO) throws Exception {
+        Invoice invoice = new Invoice();
+        invoice.setNumber(invoiceDTO.getNumber());
+        invoice.setSellerName(invoiceDTO.getSellerName());
+        invoice.setSellerTaxNumber(invoiceDTO.getSellerTaxNumber());
+        invoice.setBuyerName(invoiceDTO.getBuyerName());
+        invoice.setBuyerTaxNumber(invoiceDTO.getBuyerTaxNumber());
+        invoice.setCreated_at(invoiceDTO.getCreated_at());
+        invoice.setPayment_due(invoiceDTO.getPayment_due());
+        invoice.setGrossTotal(invoiceDTO.getGrossTotal());
+
+        invoiceRepository.save(invoice);
+        return invoice;
+    }
+
+    @RequestMapping(value = "/invoice/{id}", method = RequestMethod.PUT)
+    public Invoice newInvoice(@PathVariable(value="id") int id, @RequestBody InvoiceDTO invoiceDTO) throws Exception {
+        Invoice invoice = new Invoice();
+        invoice.setId(id);
+        invoice.setNumber(invoiceDTO.getNumber());
+        invoice.setSellerName(invoiceDTO.getSellerName());
+        invoice.setSellerTaxNumber(invoiceDTO.getSellerTaxNumber());
+        invoice.setBuyerName(invoiceDTO.getBuyerName());
+        invoice.setBuyerTaxNumber(invoiceDTO.getBuyerTaxNumber());
+        invoice.setCreated_at(invoiceDTO.getCreated_at());
+        invoice.setPayment_due(invoiceDTO.getPayment_due());
+        invoice.setGrossTotal(invoiceDTO.getGrossTotal());
+
+        invoiceRepository.save(invoice);
+        return invoice;
+    }
+
+    @RequestMapping(value = "/invoice/{id}", method = RequestMethod.GET)
+    public @ResponseBody Invoice getInvoiceById(@PathVariable(value="id") int id) throws Exception
+    {
+        Optional<Invoice> invoice = invoiceRepository.findById(id);;
+        if (invoice.isPresent())
+        {
+            return invoice.get();
+        }
+        else
+        {
+            throw new FrontendException("Ilyen azonosítóval nem található számla.");
+        }
+    }
+
+    @RequestMapping(value = "/invoice", method = RequestMethod.GET)
+    public List<Invoice> getAllInvoices()
+    {
+        return invoiceRepository.findAll();
     }
 }

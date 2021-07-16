@@ -1,53 +1,16 @@
-package hu.procats.invoicemanager.jpamodels;
+package hu.procats.invoicemanager.dtos;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-@Entity
-@Table(name = "Invoice")
-public class Invoice {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
-
-    @NotEmpty(message = "Számla sorszám nem lehet üres")
+public class InvoiceDTO {
     private String number;
-
-    @NotEmpty(message = "Eladó neve nem lehet üres")
     private String sellerName;
-
-    @NotEmpty(message = "Eladó adószáma nem lehet üres")
     private String sellerTaxNumber;
-
-    @NotEmpty(message = "Vevő neve nem lehet üres")
     private String buyerName;
-
-    @NotEmpty(message = "Vevő adószáma nem lehet üres")
     private String buyerTaxNumber;
-
-    @NotNull(message = "Számla kelte nem lehet üres")
     private Date created_at;
-
-    @NotNull(message = "Fizetési határidő nem lehet üres")
     private Date payment_due;
-
-    @Column(nullable = true)
-    private Date paid_at;
-
-    @NotNull(message = "Bruttó végösszeg nem lehet üres")
     private float grossTotal;
-
-
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getNumber() {
         return number;
@@ -103,14 +66,6 @@ public class Invoice {
 
     public void setPayment_due(Date payment_due) {
         this.payment_due = payment_due;
-    }
-
-    public Date getPaid_at() {
-        return paid_at;
-    }
-
-    public void setPaid_at(Date paid_at) {
-        this.paid_at = paid_at;
     }
 
     public float getGrossTotal() {
