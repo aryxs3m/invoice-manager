@@ -1,6 +1,9 @@
 package hu.procats.invoicemanager.jpamodels;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "User")
@@ -9,8 +12,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @NotBlank(message = "Felhasználónév kötelező")
     private String userName;
+
+    @NotBlank(message = "Jelszó kötelező")
     private String password;
+
     private boolean active;
     private String roles;
 

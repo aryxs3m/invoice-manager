@@ -1,7 +1,9 @@
 package hu.procats.invoicemanager;
 
+import hu.procats.invoicemanager.jpamodels.User;
 import hu.procats.invoicemanager.models.AuthenticationRequest;
 import hu.procats.invoicemanager.models.AuthenticationResponse;
+import hu.procats.invoicemanager.models.MyUserDetails;
 import hu.procats.invoicemanager.services.MyUserDetailsService;
 import hu.procats.invoicemanager.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +30,12 @@ public class SystemResource {
 
     @Autowired
     private JwtUtil jwtTokenUtil;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @RequestMapping({ "/ping" })
     public String ping()
@@ -50,5 +59,12 @@ public class SystemResource {
         final String jwt = jwtTokenUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
+    }
+
+    @RequestMapping(value = "/signup", method = RequestMethod.POST)
+    public User register(@RequestBody User user) throws Exception {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+        return user;
     }
 }
