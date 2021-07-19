@@ -1,5 +1,6 @@
 package hu.procats.invoicemanager;
 
+import hu.procats.invoicemanager.dtos.DashboardDTO;
 import hu.procats.invoicemanager.dtos.InvoiceDTO;
 import hu.procats.invoicemanager.dtos.PostPaidDTO;
 import hu.procats.invoicemanager.dtos.UserDTO;
@@ -30,6 +31,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -151,12 +153,53 @@ public class SystemResource {
         return invoiceRepository.findAll();
     }
 
-    @RequestMapping(value = "/getdashboard", method = RequestMethod.GET)
-    public DashboardResponse getDashboard() throws Exception
+    @RequestMapping(value = "/getdashboard", method = RequestMethod.POST)
+    public DashboardResponse getDashboard(@RequestBody DashboardDTO dashboardDTO) throws Exception
     {
         DashboardResponse dashboardResponse = new DashboardResponse();
 
-        dashboardResponse.setInvoices(invoiceRepository.findByInvoicesTypeOrderByPaymentDueDesc(0));
+        List<Invoice> invoiceList = invoiceRepository.findByInvoicesTypeOrderByPaymentDueDesc(0);
+
+        if (!dashboardDTO.getSearch().isEmpty())
+        {
+            switch (dashboardDTO.getColumn())
+            {
+                case "sellerName":
+                    invoiceList = invoiceList
+                            .stream().filter(invoice -> invoice.getSellerName().contains(dashboardDTO.getSearch()))
+                            .collect(Collectors.toList());
+                    break;
+
+                case "sellerTaxNumber":
+                    invoiceList = invoiceList
+                            .stream().filter(invoice -> invoice.getSellerTaxNumber().contains(dashboardDTO.getSearch()))
+                            .collect(Collectors.toList());
+                    break;
+
+                case "buyerName":
+                    invoiceList = invoiceList
+                            .stream().filter(invoice -> invoice.getBuyerName().contains(dashboardDTO.getSearch()))
+                            .collect(Collectors.toList());
+                    break;
+
+                case "buyerTaxNumber":
+                    invoiceList = invoiceList
+                            .stream().filter(invoice -> invoice.getBuyerTaxNumber().contains(dashboardDTO.getSearch()))
+                            .collect(Collectors.toList());
+                    break;
+
+                case "grossTotal":
+                    invoiceList = invoiceList
+                            .stream().filter(invoice -> invoice.getGrossTotal() == Float.parseFloat(dashboardDTO.getSearch()))
+                            .collect(Collectors.toList());
+                    break;
+
+                default:
+                    throw new FrontendException("A megadott oszlopra nem lehet keresni.");
+            }
+        }
+
+        dashboardResponse.setInvoices(invoiceList);
 
         try {
             dashboardResponse.setAllDebit(invoiceRepository.allDebitSum());
