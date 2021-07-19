@@ -198,9 +198,21 @@ public class SystemResource {
                             .collect(Collectors.toList());
                     break;
 
-                case "grossTotal":
+                case "=grossTotal":
                     invoiceList = invoiceList
                             .stream().filter(invoice -> invoice.getGrossTotal() == Float.parseFloat(dashboardDTO.getSearch()))
+                            .collect(Collectors.toList());
+                    break;
+
+                case "<grossTotal":
+                    invoiceList = invoiceList
+                            .stream().filter(invoice -> invoice.getGrossTotal() > Float.parseFloat(dashboardDTO.getSearch()))
+                            .collect(Collectors.toList());
+                    break;
+
+                case ">grossTotal":
+                    invoiceList = invoiceList
+                            .stream().filter(invoice -> invoice.getGrossTotal() < Float.parseFloat(dashboardDTO.getSearch()))
                             .collect(Collectors.toList());
                     break;
 
