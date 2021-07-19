@@ -8,8 +8,9 @@ public class InvoiceDTO {
     private String sellerTaxNumber;
     private String buyerName;
     private String buyerTaxNumber;
-    private Date created_at;
-    private Date payment_due;
+    private Date createdAt;
+    private Date paymentDue;
+    private int invoicesType;
     private float grossTotal;
 
     public String getNumber() {
@@ -52,20 +53,28 @@ public class InvoiceDTO {
         this.buyerTaxNumber = buyerTaxNumber;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public Date getPayment_due() {
-        return payment_due;
+    public Date getPaymentDue() {
+        return paymentDue;
     }
 
-    public void setPayment_due(Date payment_due) {
-        this.payment_due = payment_due;
+    public void setPaymentDue(Date paymentDue) {
+        this.paymentDue = paymentDue;
+    }
+
+    public int getInvoicesType() {
+        return invoicesType;
+    }
+
+    public void setInvoicesType(int invoicesType) {
+        this.invoicesType = invoicesType;
     }
 
     public float getGrossTotal() {

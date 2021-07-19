@@ -28,18 +28,22 @@ public class Invoice {
     private String buyerTaxNumber;
 
     @NotNull(message = "Számla kelte nem lehet üres")
-    private Date created_at;
+    private Date createdAt;
 
     @NotNull(message = "Fizetési határidő nem lehet üres")
-    private Date payment_due;
+    private Date paymentDue;
+
+    @NotNull
+    private Boolean paid = false;
+
+    @NotNull
+    private int invoicesType = 0;
 
     @Column(nullable = true)
-    private Date paid_at;
+    private Date paidDate;
 
     @NotNull(message = "Bruttó végösszeg nem lehet üres")
     private float grossTotal;
-
-
 
     public int getId() {
         return id;
@@ -89,28 +93,44 @@ public class Invoice {
         this.buyerTaxNumber = buyerTaxNumber;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public Date getPayment_due() {
-        return payment_due;
+    public Date getPaymentDue() {
+        return paymentDue;
     }
 
-    public void setPayment_due(Date payment_due) {
-        this.payment_due = payment_due;
+    public void setPaymentDue(Date paymentDue) {
+        this.paymentDue = paymentDue;
     }
 
-    public Date getPaid_at() {
-        return paid_at;
+    public Boolean getPaid() {
+        return paid;
     }
 
-    public void setPaid_at(Date paid_at) {
-        this.paid_at = paid_at;
+    public void setPaid(Boolean paid) {
+        this.paid = paid;
+    }
+
+    public int getInvoicesType() {
+        return invoicesType;
+    }
+
+    public void setInvoicesType(int invoicesType) {
+        this.invoicesType = invoicesType;
+    }
+
+    public Date getPaidDate() {
+        return paidDate;
+    }
+
+    public void setPaidDate(Date paidDate) {
+        this.paidDate = paidDate;
     }
 
     public float getGrossTotal() {

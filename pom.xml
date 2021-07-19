@@ -15,6 +15,7 @@
 	<description>Invoice Manager JWT</description>
 	<properties>
 		<java.version>11</java.version>
+		<start-class>hu.procats.invoicemanager.InvoiceManagerApplication</start-class>
 	</properties>
 	<dependencies>
 		<dependency>

@@ -1,11 +1,13 @@
 package hu.procats.invoicemanager;
 
 import hu.procats.invoicemanager.dtos.InvoiceDTO;
+import hu.procats.invoicemanager.dtos.PostPaidDTO;
 import hu.procats.invoicemanager.dtos.UserDTO;
 import hu.procats.invoicemanager.jpamodels.Invoice;
 import hu.procats.invoicemanager.jpamodels.User;
 import hu.procats.invoicemanager.models.AuthenticationRequest;
 import hu.procats.invoicemanager.models.AuthenticationResponse;
+import hu.procats.invoicemanager.models.DashboardResponse;
 import hu.procats.invoicemanager.repositories.InvoiceRepository;
 import hu.procats.invoicemanager.services.MyUserDetailsService;
 import hu.procats.invoicemanager.util.ErrorInfo;
@@ -13,6 +15,7 @@ import hu.procats.invoicemanager.util.FrontendException;
 import hu.procats.invoicemanager.util.Handler;
 import hu.procats.invoicemanager.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -103,8 +106,8 @@ public class SystemResource {
         invoice.setSellerTaxNumber(invoiceDTO.getSellerTaxNumber());
         invoice.setBuyerName(invoiceDTO.getBuyerName());
         invoice.setBuyerTaxNumber(invoiceDTO.getBuyerTaxNumber());
-        invoice.setCreated_at(invoiceDTO.getCreated_at());
-        invoice.setPayment_due(invoiceDTO.getPayment_due());
+        invoice.setCreatedAt(invoiceDTO.getCreatedAt());
+        invoice.setPaymentDue(invoiceDTO.getPaymentDue());
         invoice.setGrossTotal(invoiceDTO.getGrossTotal());
 
         invoiceRepository.save(invoice);
@@ -120,8 +123,8 @@ public class SystemResource {
         invoice.setSellerTaxNumber(invoiceDTO.getSellerTaxNumber());
         invoice.setBuyerName(invoiceDTO.getBuyerName());
         invoice.setBuyerTaxNumber(invoiceDTO.getBuyerTaxNumber());
-        invoice.setCreated_at(invoiceDTO.getCreated_at());
-        invoice.setPayment_due(invoiceDTO.getPayment_due());
+        invoice.setCreatedAt(invoiceDTO.getCreatedAt());
+        invoice.setPaymentDue(invoiceDTO.getPaymentDue());
         invoice.setGrossTotal(invoiceDTO.getGrossTotal());
 
         invoiceRepository.save(invoice);
@@ -146,5 +149,46 @@ public class SystemResource {
     public List<Invoice> getAllInvoices()
     {
         return invoiceRepository.findAll();
+    }
+
+    @RequestMapping(value = "/getdashboard", method = RequestMethod.GET)
+    public DashboardResponse getDashboard() throws Exception
+    {
+        DashboardResponse dashboardResponse = new DashboardResponse();
+
+        dashboardResponse.setInvoices(invoiceRepository.findByInvoicesTypeOrderByPaymentDueDesc(0));
+
+        try {
+            dashboardResponse.setAllDebit(invoiceRepository.allDebitSum());
+        } catch (Exception e) {
+            dashboardResponse.setAllDebit(0);
+        }
+
+        try {
+            dashboardResponse.setAllReceivables(invoiceRepository.allReceivablesSum());
+        } catch (Exception e) {
+            dashboardResponse.setAllReceivables(0);
+        }
+
+        return dashboardResponse;
+    }
+
+    @RequestMapping(value = "/postpaid", method = RequestMethod.POST)
+    public Invoice postPaid(@RequestBody PostPaidDTO postPaidDTO) throws Exception
+    {
+        Optional<Invoice> optionalInvoice = invoiceRepository.findById(postPaidDTO.getId());
+        if (optionalInvoice.isPresent())
+        {
+            Invoice invoice = optionalInvoice.get();
+            invoice.setPaid(true);
+            invoiceRepository.save(invoice);
+
+            return invoice;
+        }
+        else
+        {
+            throw new FrontendException("Ilyen azonosítóval nem található számla.");
+        }
+
     }
 }
