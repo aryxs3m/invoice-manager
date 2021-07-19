@@ -45,6 +45,17 @@ public class Invoice {
     @NotNull(message = "Bruttó végösszeg nem lehet üres")
     private float grossTotal;
 
+    @Column(nullable = true)
+    private String attachmentFile;
+
+    public String getAttachmentFile() {
+        return attachmentFile;
+    }
+
+    public void setAttachmentFile(String attachmentFile) {
+        this.attachmentFile = attachmentFile;
+    }
+
     public int getId() {
         return id;
     }

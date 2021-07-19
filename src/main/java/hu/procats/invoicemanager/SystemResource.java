@@ -1,11 +1,9 @@
 package hu.procats.invoicemanager;
 
-import hu.procats.invoicemanager.dtos.DashboardDTO;
-import hu.procats.invoicemanager.dtos.InvoiceDTO;
-import hu.procats.invoicemanager.dtos.PostPaidDTO;
-import hu.procats.invoicemanager.dtos.UserDTO;
+import hu.procats.invoicemanager.dtos.*;
 import hu.procats.invoicemanager.jpamodels.Invoice;
 import hu.procats.invoicemanager.jpamodels.User;
+import hu.procats.invoicemanager.models.AckResponse;
 import hu.procats.invoicemanager.models.AuthenticationRequest;
 import hu.procats.invoicemanager.models.AuthenticationResponse;
 import hu.procats.invoicemanager.models.DashboardResponse;
@@ -15,7 +13,10 @@ import hu.procats.invoicemanager.util.ErrorInfo;
 import hu.procats.invoicemanager.util.FrontendException;
 import hu.procats.invoicemanager.util.Handler;
 import hu.procats.invoicemanager.util.JwtUtil;
+import org.apache.juli.logging.Log;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +26,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -54,6 +61,9 @@ public class SystemResource {
 
     @Autowired
     private InvoiceRepository invoiceRepository;
+
+    @Autowired
+    private Environment environment;
 
     @RequestMapping({ "/ping" })
     public String ping()
@@ -232,6 +242,58 @@ public class SystemResource {
         {
             throw new FrontendException("Ilyen azonosítóval nem található számla.");
         }
-
     }
+
+    @RequestMapping(value = "/postattachment", method = RequestMethod.POST)
+    public AckResponse postAttachment(@RequestBody AttachmentDTO attachmentDTO) throws Exception
+    {
+        Optional<Invoice> optionalInvoice = invoiceRepository.findById(attachmentDTO.getId());
+
+        if (optionalInvoice.isPresent())
+        {
+            String filePath = environment.getProperty("invoiceapp.attachments-folder") + UUID.randomUUID();
+            File file = new File(filePath);
+            try {
+                OutputStream outputStream = new FileOutputStream(file);
+                outputStream.write(Base64.getDecoder().decode(attachmentDTO.getFile()));
+                outputStream.flush();
+                outputStream.close();
+
+                Invoice invoice = optionalInvoice.get();
+                invoice.setAttachmentFile(filePath);
+                invoiceRepository.save(invoice);
+
+                return new AckResponse("Csatolmány rögzítve.");
+            } catch (IOException e) {
+                throw new FrontendException("Szerveroldali hiba miatt a csatolmány rögzítése sikertelen volt.");
+            }
+        }
+        else
+        {
+            throw new FrontendException("Nincs számla a rendszerben a megadott azonosítóval.");
+        }
+    }
+
+    @GetMapping(value = "/getattachment/{id}")
+    public StreamingResponseBody getAttachment(@PathVariable int id) throws Exception {
+        Optional<Invoice> optionalInvoice = invoiceRepository.findById(id);
+
+        if (optionalInvoice.isPresent())
+        {
+            File f = new File(optionalInvoice.get().getAttachmentFile());
+            InputStream in;
+            if (f.exists()) {
+                in = new BufferedInputStream(new FileInputStream(f));
+            } else {
+                throw new FrontendException("A számla csatolmánya nem található.");
+            }
+            return os -> FileCopyUtils.copy(in, os);
+        }
+        else
+        {
+            throw new FrontendException("Nincs számla a rendszerben a megadott azonosítóval.");
+        }
+    }
+
+
 }
