@@ -157,6 +157,21 @@ public class SystemResource {
         }
     }
 
+    @RequestMapping(value = "/invoice/{id}", method = RequestMethod.DELETE)
+    public AckResponse deleteInvoiceById(@PathVariable(value="id") int id) throws Exception
+    {
+        Optional<Invoice> invoice = invoiceRepository.findById(id);
+        if (invoice.isPresent())
+        {
+            invoiceRepository.delete(invoice.get());
+            return new AckResponse("Számla törölve.");
+        }
+        else
+        {
+            throw new FrontendException("Ilyen azonosítóval nem található számla.");
+        }
+    }
+
     @RequestMapping(value = "/invoice", method = RequestMethod.GET)
     public List<Invoice> getAllInvoices()
     {
