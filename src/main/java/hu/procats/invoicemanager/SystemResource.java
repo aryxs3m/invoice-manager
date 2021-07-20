@@ -3,10 +3,7 @@ package hu.procats.invoicemanager;
 import hu.procats.invoicemanager.dtos.*;
 import hu.procats.invoicemanager.jpamodels.Invoice;
 import hu.procats.invoicemanager.jpamodels.User;
-import hu.procats.invoicemanager.models.AckResponse;
-import hu.procats.invoicemanager.models.AuthenticationRequest;
-import hu.procats.invoicemanager.models.AuthenticationResponse;
-import hu.procats.invoicemanager.models.DashboardResponse;
+import hu.procats.invoicemanager.models.*;
 import hu.procats.invoicemanager.repositories.InvoiceRepository;
 import hu.procats.invoicemanager.services.MyUserDetailsService;
 import hu.procats.invoicemanager.util.FrontendException;
@@ -76,7 +73,10 @@ public class SystemResource {
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        Map<String, String> userMap = new HashMap<>();
+        userMap.put("userName", userDetails.getUsername());
+
+        return ResponseEntity.ok(new AuthenticationResponse(jwt, userMap));
     }
 
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
