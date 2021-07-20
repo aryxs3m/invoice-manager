@@ -3,7 +3,7 @@ package hu.procats.invoicemanager.dtos;
 import java.util.Date;
 
 public class InvoiceDTO {
-    private String number;
+    private String invoiceNumber;
     private String sellerName;
     private String sellerTaxNumber;
     private String buyerName;
@@ -13,12 +13,12 @@ public class InvoiceDTO {
     private int invoicesType;
     private float grossTotal;
 
-    public String getNumber() {
-        return number;
+    public String getInvoiceNumber() {
+        return invoiceNumber;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
     }
 
     public String getSellerName() {

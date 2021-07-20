@@ -113,7 +113,7 @@ public class SystemResource {
     @RequestMapping(value = "/invoice", method = RequestMethod.POST)
     public Invoice newInvoice(@RequestBody InvoiceDTO invoiceDTO) throws Exception {
         Invoice invoice = new Invoice();
-        invoice.setNumber(invoiceDTO.getNumber());
+        invoice.setInvoiceNumber(invoiceDTO.getInvoiceNumber());
         invoice.setSellerName(invoiceDTO.getSellerName());
         invoice.setSellerTaxNumber(invoiceDTO.getSellerTaxNumber());
         invoice.setBuyerName(invoiceDTO.getBuyerName());
@@ -130,7 +130,7 @@ public class SystemResource {
     public Invoice newInvoice(@PathVariable(value="id") int id, @RequestBody InvoiceDTO invoiceDTO) throws Exception {
         Invoice invoice = new Invoice();
         invoice.setId(id);
-        invoice.setNumber(invoiceDTO.getNumber());
+        invoice.setInvoiceNumber(invoiceDTO.getInvoiceNumber());
         invoice.setSellerName(invoiceDTO.getSellerName());
         invoice.setSellerTaxNumber(invoiceDTO.getSellerTaxNumber());
         invoice.setBuyerName(invoiceDTO.getBuyerName());

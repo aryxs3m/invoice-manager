@@ -13,7 +13,7 @@ public class Invoice {
     private int id;
 
     @NotEmpty(message = "Számla sorszám nem lehet üres")
-    private String number;
+    private String invoiceNumber;
 
     @NotEmpty(message = "Eladó neve nem lehet üres")
     private String sellerName;
@@ -64,12 +64,12 @@ public class Invoice {
         this.id = id;
     }
 
-    public String getNumber() {
-        return number;
+    public String getInvoiceNumber() {
+        return invoiceNumber;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
     }
 
     public String getSellerName() {
