@@ -269,7 +269,7 @@ public class SystemResource {
         return dashboardResponse;
     }
 
-    @RequestMapping(value = "/postpaid", method = RequestMethod.POST)
+    @RequestMapping(value = "/paid", method = RequestMethod.POST)
     public Invoice postPaid(@RequestBody PostPaidDTO postPaidDTO) throws Exception
     {
         Optional<Invoice> optionalInvoice = invoiceRepository.findById(postPaidDTO.getId());
