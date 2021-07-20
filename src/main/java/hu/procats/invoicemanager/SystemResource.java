@@ -110,6 +110,7 @@ public class SystemResource {
         invoice.setBuyerTaxNumber(invoiceDTO.getBuyerTaxNumber());
         invoice.setCreatedAt(invoiceDTO.getCreatedAt());
         invoice.setPaymentDue(invoiceDTO.getPaymentDue());
+        invoice.setInvoicesType(invoiceDTO.getInvoicesType());
         invoice.setGrossTotal(invoiceDTO.getGrossTotal());
 
         invoiceRepository.save(invoice);
@@ -127,6 +128,7 @@ public class SystemResource {
         invoice.setBuyerTaxNumber(invoiceDTO.getBuyerTaxNumber());
         invoice.setCreatedAt(invoiceDTO.getCreatedAt());
         invoice.setPaymentDue(invoiceDTO.getPaymentDue());
+        invoice.setInvoicesType(invoiceDTO.getInvoicesType());
         invoice.setGrossTotal(invoiceDTO.getGrossTotal());
 
         invoiceRepository.save(invoice);
@@ -173,7 +175,7 @@ public class SystemResource {
     {
         DashboardResponse dashboardResponse = new DashboardResponse();
 
-        List<Invoice> invoiceList = invoiceRepository.findByInvoicesTypeOrderByPaymentDueDesc(0);
+        List<Invoice> invoiceList = invoiceRepository.findByPaidOrderByPaymentDueDesc(false);
 
         if (!dashboardDTO.getSearch().isEmpty())
         {

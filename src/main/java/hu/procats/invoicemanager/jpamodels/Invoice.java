@@ -37,7 +37,7 @@ public class Invoice {
     private Boolean paid = false;
 
     @NotNull
-    private int invoicesType = 0;
+    private String invoicesType = "0";
 
     @Column(nullable = true)
     private Date paidDate;
@@ -128,11 +128,11 @@ public class Invoice {
         this.paid = paid;
     }
 
-    public int getInvoicesType() {
+    public String getInvoicesType() {
         return invoicesType;
     }
 
-    public void setInvoicesType(int invoicesType) {
+    public void setInvoicesType(String invoicesType) {
         this.invoicesType = invoicesType;
     }
 

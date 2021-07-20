@@ -10,7 +10,7 @@ public class InvoiceDTO {
     private String buyerTaxNumber;
     private Date createdAt;
     private Date paymentDue;
-    private int invoicesType;
+    private String invoicesType;
     private float grossTotal;
 
     public String getInvoiceNumber() {
@@ -69,11 +69,11 @@ public class InvoiceDTO {
         this.paymentDue = paymentDue;
     }
 
-    public int getInvoicesType() {
+    public String getInvoicesType() {
         return invoicesType;
     }
 
-    public void setInvoicesType(int invoicesType) {
+    public void setInvoicesType(String invoicesType) {
         this.invoicesType = invoicesType;
     }
 
