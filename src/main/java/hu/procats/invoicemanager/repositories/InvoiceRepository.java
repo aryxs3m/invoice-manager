@@ -11,7 +11,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
 
     List<Invoice> findAll();
 
-    List<Invoice> findByInvoicesTypeOrderByPaymentDueDesc(int invoices_type);
+    List<Invoice> findByPaidOrderByPaymentDueDesc(boolean paid);
 
     @Query(value = "SELECT SUM(i.gross_total) FROM invoice i WHERE i.invoices_type = '0' AND i.paid = 0", nativeQuery = true)
     Float allDebitSum();

@@ -21,10 +21,9 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import java.io.*;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -220,6 +219,31 @@ public class SystemResource {
                 case ">grossTotal":
                     invoiceList = invoiceList
                             .stream().filter(invoice -> invoice.getGrossTotal() < Float.parseFloat(dashboardDTO.getSearch()))
+                            .collect(Collectors.toList());
+                    break;
+
+                case "paymentDue":
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                    invoiceList = invoiceList
+                            .stream().filter(invoice -> {
+                                try {
+                                    return invoice.getPaymentDue() == dateFormat.parse(dashboardDTO.getSearch());
+                                } catch (ParseException e) {
+                                    return false;
+                                }
+                            })
+                            .collect(Collectors.toList());
+                    break;
+
+                case "invoiceNumber":
+                    invoiceList = invoiceList
+                            .stream().filter(invoice -> invoice.getInvoiceNumber().contains(dashboardDTO.getSearch()))
+                            .collect(Collectors.toList());
+                    break;
+
+                case "invoicesType":
+                    invoiceList = invoiceList
+                            .stream().filter(invoice -> invoice.getInvoicesType().equals(dashboardDTO.getSearch()))
                             .collect(Collectors.toList());
                     break;
 
