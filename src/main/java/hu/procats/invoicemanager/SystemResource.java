@@ -9,16 +9,10 @@ import hu.procats.invoicemanager.models.AuthenticationResponse;
 import hu.procats.invoicemanager.models.DashboardResponse;
 import hu.procats.invoicemanager.repositories.InvoiceRepository;
 import hu.procats.invoicemanager.services.MyUserDetailsService;
-import hu.procats.invoicemanager.util.ErrorInfo;
 import hu.procats.invoicemanager.util.FrontendException;
-import hu.procats.invoicemanager.util.Handler;
 import hu.procats.invoicemanager.util.JwtUtil;
-import org.apache.juli.logging.Log;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,15 +23,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)

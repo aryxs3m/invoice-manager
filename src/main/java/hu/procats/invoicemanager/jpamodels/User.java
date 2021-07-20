@@ -1,9 +1,6 @@
 package hu.procats.invoicemanager.jpamodels;
 
-import org.hibernate.validator.constraints.Length;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
